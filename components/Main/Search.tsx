@@ -5,12 +5,41 @@ import type { ChatData, ChatMessage } from "@/types/Chat";
 import { Search, X } from "lucide-react";
 
 /**
- * Highlights matched text portions using <mark>
+ * 🪄 Highlights matched text portions using <mark>
  */
 function highlightMatch(text: string, query: string): string {
   if (!query.trim()) return text;
-  const regex = new RegExp(`(${query})`, "gi");
-  return text.replace(regex, `<mark class="bg-accent/20 text-accent font-semibold">$1</mark>`);
+
+  // Allow multiple search words
+  const escaped = query
+    .split(/\s+/)
+    .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+    .join("|");
+
+  const regex = new RegExp(`(${escaped})`, "gi");
+  return text.replace(
+    regex,
+    `<mark class="bg-accent/20 text-accent font-semibold">$1</mark>`
+  );
+}
+
+/**
+ * 🧠 Ranks search relevance — newer + query frequency
+ */
+function rankMatch(message: ChatMessage, query: string): number {
+  const text = (message.user || message.ai || "").toLowerCase();
+  const words = query.toLowerCase().split(/\s+/);
+  let score = 0;
+
+  words.forEach((w) => {
+    if (text.includes(w)) score += 1;
+  });
+
+  // Boost recent messages
+  const timestamp = new Date(message.timestamp).getTime();
+  const ageBoost = Date.now() - timestamp < 1000 * 60 * 60 * 24 ? 0.5 : 0;
+
+  return score + ageBoost;
 }
 
 interface SearchProps {
@@ -20,10 +49,10 @@ interface SearchProps {
 export default function SearchComponent({ onExit }: SearchProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<
-    { chatId: string; title: string; message: ChatMessage }[]
+    { chatId: string; title: string; message: ChatMessage; score: number }[]
   >([]);
 
-  // 🧠 Load all chats from localStorage
+  // 🧠 Load all chats
   const getAllChats = useCallback((): ChatData[] => {
     const chats: ChatData[] = [];
     for (let i = 0; i < localStorage.length; i++) {
@@ -36,58 +65,68 @@ export default function SearchComponent({ onExit }: SearchProps) {
     return chats;
   }, []);
 
-  // 🔍 Perform keyword search (case-insensitive)
+  // 🔍 Perform advanced search
   const performSearch = useCallback(() => {
-    if (!query.trim()) return setResults([]);
+    const q = query.trim().toLowerCase();
+    if (!q) return setResults([]);
 
-    const lowerQuery = query.toLowerCase();
-    const allChats = getAllChats();
-    const matches: { chatId: string; title: string; message: ChatMessage }[] = [];
+    const chats = getAllChats();
+    const matches: {
+      chatId: string;
+      title: string;
+      message: ChatMessage;
+      score: number;
+    }[] = [];
 
-    for (const chat of allChats) {
+    for (const chat of chats) {
       for (const msg of chat.messages) {
-        const content = msg.user || msg.ai || "";
-        if (content.toLowerCase().includes(lowerQuery)) {
+        const score = rankMatch(msg, q);
+        if (score > 0) {
           matches.push({
             chatId: chat.id,
             title: chat.title || "Untitled Chat",
             message: msg,
+            score,
           });
         }
       }
     }
+
+    // Sort by score (relevance) and timestamp (newer first)
+    matches.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return (
+        new Date(b.message.timestamp).getTime() -
+        new Date(a.message.timestamp).getTime()
+      );
+    });
 
     setResults(matches);
   }, [query, getAllChats]);
 
   // ⏳ Debounced search
   useEffect(() => {
-    if (!query.trim()) {
-      const clear = requestAnimationFrame(() => setResults([]));
-      return () => cancelAnimationFrame(clear);
-    }
-
-    const debounce = setTimeout(performSearch, 300);
+    const debounce = setTimeout(performSearch, 250);
     return () => clearTimeout(debounce);
   }, [query, performSearch]);
 
-  // 📤 When user clicks a message → open chat
+  // 📤 Open chat event
   const handleOpenChat = (chatId: string) => {
     window.dispatchEvent(new CustomEvent("open-chat", { detail: { id: chatId } }));
   };
 
   return (
-    <div className="w-full max-w-3xl h-[80vh] flex flex-col items-center gap-6">
+    <div className="w-full max-w-3xl h-[80vh] flex flex-col items-center gap-6 animate-fadeIn">
       {/* 🔎 Search Bar */}
       <div className="flex w-full items-center gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-2.5 w-4 h-4 text-foreground-sec" />
           <input
             type="text"
-            placeholder="Search through your conversations..."
+            placeholder="Search across all chats and messages..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-xl bg-background-sec text-foreground placeholder:text-foreground-sec focus:ring-2 focus:ring-accent outline-none shadow-sm"
+            className="w-full pl-9 pr-4 py-2 rounded-xl bg-background-sec text-foreground placeholder:text-foreground-sec focus:ring-2 focus:ring-accent outline-none shadow-sm transition-all"
           />
         </div>
         <button
@@ -99,12 +138,12 @@ export default function SearchComponent({ onExit }: SearchProps) {
       </div>
 
       {/* 🧾 Results Section */}
-      <div className="flex-1 w-full overflow-auto rounded-xl bg-background-sec p-5 shadow-inner">
+      <div className="flex-1 w-full overflow-auto rounded-xl bg-background-sec p-5 shadow-inner scrollbar-thin scrollbar-thumb-border/50">
         {results.length === 0 ? (
           <p className="text-foreground-sec italic text-center mt-10">
             {query
-              ? "No matches found..."
-              : "Start typing to search through your conversations."}
+              ? "No matching messages found..."
+              : "Start typing to search your AI and user messages."}
           </p>
         ) : (
           <ul className="space-y-4">
@@ -116,20 +155,29 @@ export default function SearchComponent({ onExit }: SearchProps) {
                 <li
                   key={index}
                   onClick={() => handleOpenChat(res.chatId)}
-                  className="cursor-pointer rounded-xl bg-background p-4 hover:bg-background-sec/80 transition-all shadow-sm"
+                  className="cursor-pointer rounded-xl bg-background p-4 hover:bg-background-sec/80 transition-all shadow-sm border border-transparent hover:border-accent/30"
                 >
-                  <h3 className="text-sm font-semibold text-accent mb-1">
-                    {res.title}
-                  </h3>
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-semibold text-accent mb-1">
+                      {res.title}
+                    </h3>
+                    <span className="text-[10px] text-foreground-sec">
+                      {new Date(res.message.timestamp).toLocaleString()}
+                    </span>
+                  </div>
 
                   <p
                     className="text-sm text-foreground leading-relaxed"
                     dangerouslySetInnerHTML={{ __html: highlighted }}
                   />
 
-                  <p className="text-[11px] text-foreground-sec mt-2">
-                    {new Date(res.message.timestamp).toLocaleString()}
-                  </p>
+                  <div className="mt-2 text-[11px] text-foreground-sec italic">
+                    Matched in{" "}
+                    {res.message.user ? "User Message" : "AI Response"} —{" "}
+                    <span className="text-accent font-medium">
+                      Relevance: {res.score.toFixed(1)}
+                    </span>
+                  </div>
                 </li>
               );
             })}

@@ -1,8 +1,7 @@
 # 💬 ChatAI — Intelligent Conversations & Insights
-
 **ChatAI** is a smart chat platform where you can talk with an AI, analyze your conversations, and uncover deep insights about your personality, emotions, and creativity — all in one elegant interface.
 
-> 🚀 **Try it live:** [chat-i64logxzb-prakash113s-projects.vercel.app](#)  
+> 🚀 **Try it live:** [https://chat-i64logxzb-prakash113s-projects.vercel.app](https://chat-i64logxzb-prakash113s-projects.vercel.app)
 
 ---
 
@@ -10,6 +9,13 @@
 
 ChatAI is a **functional AI chat application** and an **assignment project** built using **two different tech stacks**:
 
+![Main chat interface screenshot](https://raw.githubusercontent.com/PRAKASH113/ChatAI/main/public/home.png)
+
+### AI Generated Insight Example
+![Screenshot of AI generated insights](https://raw.githubusercontent.com/PRAKASH113/ChatAI/main/public/insight.png)
+
+### Architecture Diagram
+![System Architecture Diagram](https://raw.githubusercontent.com/PRAKASH113/ChatAI/main/public/architecture.png)
 ---
 
 ## ⚙️ Tech Stack Overview
@@ -42,6 +48,7 @@ In this setup, chats and messages are stored in the PostgreSQL database instead 
 Everything else — from chat analysis to theme toggling — stays the same.
 
 ---
+
 
 ## ✨ Features
 
@@ -103,17 +110,19 @@ bun install
 bun run dev
 ```
 
+## 🧰 Environment Variables
 
-# 🧰 Environment Variables
-Make sure to include the following in your .env.local file for both stacks:
+Make sure to include the following in your `.env.local` file for both stacks:
 
-## 🔐 API Keys
->GEMINI_API_KEY=your_gemini_api_key
+```
+# 🔐 API Keys
+GEMINI_API_KEY=your_gemini_api_key
 
-## 🐘 Django PostgreSQL Backend (only for Stack 2)
->NEXT_PUBLIC_API_BASE=http://127.0.0.1:8000/api
+# 🐘 Django PostgreSQL Backend (only for Stack 2)
+NEXT_PUBLIC_API_BASE=[http://127.0.0.1:8000/api](http://127.0.0.1:8000/api)
 POSTGRES_DB=chatai_db
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=your_password
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
+```

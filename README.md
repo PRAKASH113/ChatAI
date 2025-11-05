@@ -2,7 +2,7 @@
 
 **ChatAI** is a smart chat platform where you can talk with an AI, analyze your conversations, and uncover deep insights about your personality, emotions, and creativity — all in one elegant interface.
 
-> 🚀 **Try it live:** [https://your-vercel-deployment-link.vercel.app](#)  
+> 🚀 **Try it live:** [chat-i64logxzb-prakash113s-projects.vercel.app](#)  
 
 ---
 

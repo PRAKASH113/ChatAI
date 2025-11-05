@@ -32,6 +32,14 @@ It uses **localStorage** to manage and persist all chat data directly in the bro
 👉 **You can run this version instantly.**  
 No extra setup or backend required — just clone and run the Next.js app.
 
+#### **Quick Run (Stack 1)**
+
+From the project root:
+
+```bash
+bun install
+bun run dev
+```
 ---
 
 ### 🐘 **Stack 2 — Full Assignment Stack (Django + PostgreSQL + Next.js)**
@@ -49,7 +57,10 @@ Everything else — from chat analysis to theme toggling — stays the same.
 
 ---
 
+### **API Used**
+Google Gemini 2.5 flash
 
+---
 ## ✨ Features
 
 ✅ **AI Chatting** — talk naturally with an AI powered by Gemini (or any integrated LLM)  

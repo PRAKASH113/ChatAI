@@ -1,0 +1,189 @@
+@import "tailwindcss";
+
+:root {
+  /* Fonts */
+  --font-poppins: "Poppins", sans-serif;
+  --font-hindi: 'Noto Sans Devanagari', sans-serif;
+}
+
+/* Default theme = dark */
+:root,
+[data-theme="dark"] {
+  --background: #0a0a0a;
+  --background-sec: #1a1a1a;
+
+  --foreground: #ededed;
+  --foreground-sec: #cfcfcf;
+
+  --accent: #16a34a;
+  --accent-sec: #22c55e;
+}
+
+/* Light theme */
+[data-theme="light"] {
+  --background: #ffffff;
+  --background-sec: #f5f5f5;
+
+  --foreground: #171717;
+  --foreground-sec: #404040;
+
+  --accent: #22c55e;
+  --accent-sec: #16a34a;
+}
+
+@theme inline {
+  /* Colors */
+  --color-background: var(--background);
+  --color-background-sec: var(--background-sec);
+  --color-foreground: var(--foreground);
+  --color-foreground-sec: var(--foreground-sec);
+  --color-accent: var(--accent);
+  --color-accent-sec: var(--accent-sec);
+
+  /* Fonts */
+  --font-pop: var(--font-poppins), sans-serif;
+}
+
+html {
+  font-family: var(--font-outfit);
+}
+
+html:lang(hi) {
+  font-family: var(--font-hindi);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-pop);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+
+
+/* Animated Theme Toggle */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+
+
+/* Scrollbar (global) */
+::-webkit-scrollbar {
+  width: 8px;
+  /* overall width */
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  /* keep track invisible / subtle */
+  border-radius: 9999px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+  /* tiny inner border for depth */
+  margin: 4px 0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.04));
+  border-radius: 9999px;
+  min-height: 24px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+  transition: background 160ms ease, transform 160ms ease;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  background-color: color-mix(in srgb, var(--foreground-sec) 12%, transparent);
+  opacity: 0.7;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  opacity: 1;
+  transform: scaleY(1.02);
+  background-color: color-mix(in srgb, var(--foreground-sec) 28%, transparent);
+}
+
+::-webkit-scrollbar-thumb:active {
+  transform: scaleY(1.04);
+  background-color: color-mix(in srgb, var(--foreground) 36%, transparent);
+}
+
+.subtle-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.subtle-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.subtle-scroll::-webkit-scrollbar-thumb {
+  opacity: 0.75;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--foreground-sec) 12%, transparent) transparent;
+}
+
+.subtle-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--foreground-sec) 12%, transparent) transparent;
+}
+
+
+
+/* Response formating */
+.prose strong {
+  font-weight: 600;
+}
+
+.prose code {
+  background: rgba(0, 0, 0, 0.08);
+  padding: 0.2rem 0.3rem;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.prose pre {
+  background: rgba(0, 0, 0, 0.07);
+  padding: 0.5rem;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.math {
+  font-family: 'Courier New', monospace;
+  background: rgba(0, 255, 0, 0.1);
+  padding: 0 3px;
+  border-radius: 4px;
+}
+
+
+
+/* FadeIn Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+
+
+.profile-glow:hover {
+  box-shadow: 0 0 30px var(--accent);
+  transform: scale(1.03);
+  transition: all 0.3s ease;
+}

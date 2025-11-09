@@ -74,7 +74,7 @@ export default function InfoOverlay({ onClose }: InfoOverlayProps) {
               transition={{ delay: 0.4 }}
             >
               <a
-                href="https://github.com/yourusername"
+                href="https://github.com/PRAKASH113"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground-sec hover:text-accent transition"
@@ -84,7 +84,7 @@ export default function InfoOverlay({ onClose }: InfoOverlayProps) {
                 <Github className="w-5 h-5" />
               </a>
               <a
-                href="https://linkedin.com/in/yourusername"
+                href="https://www.linkedin.com/in/prakash-na-b7b108233/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground-sec hover:text-accent transition"
@@ -94,7 +94,7 @@ export default function InfoOverlay({ onClose }: InfoOverlayProps) {
                 <Linkedin className="w-5 h-5" />
               </a>
               <a
-                href="https://instagram.com/yourusername"
+                href="https://www.instagram.com/exotickhatri?igsh=MTc1NHk5YmRkOGNxMg=="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground-sec hover:text-accent transition"
@@ -104,7 +104,7 @@ export default function InfoOverlay({ onClose }: InfoOverlayProps) {
                 <Instagram className="w-5 h-5" />
               </a>
               <a
-                href="https://twitter.com/yourusername"
+                href="https://x.com/PPPP_Prakash?t=wk2Egj5MqoR5fKsXh2OCfA&s=08"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground-sec hover:text-accent transition"
